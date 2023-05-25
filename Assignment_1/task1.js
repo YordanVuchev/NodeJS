@@ -33,6 +33,7 @@ const requestHandler = (req, res) => {
       const message = parsedBody.split('=')[1]
       console.log(message)
     })
+    //status code for redirect
     res.statusCode = 302
     res.setHeader('Location', '/')
     res.end()
