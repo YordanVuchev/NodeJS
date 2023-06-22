@@ -20,6 +20,11 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect('/')
 }
 
+exports.postDeleteProduct = (req, res, next) => {
+  console.log(req.body)
+  req.redirect('/products')
+}
+
 exports.getProducts = (req, res, next) => {
   Product.fetchAll((products) => {
     res.render('admin/products', {
