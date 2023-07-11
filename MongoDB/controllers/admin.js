@@ -13,7 +13,14 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl
   const price = req.body.price
   const description = req.body.description
-  const product = new Product(title, price, description, imageUrl)
+  const product = new Product(
+    title,
+    price,
+    description,
+    imageUrl,
+    null,
+    req.user._id
+  )
   product
     .save()
     .then((result) => {
@@ -25,11 +32,8 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId
-  Product.findById(productId)
-    .then((product) => {
-      return product.destroy()
-    })
-    .then((result) => {
+  Product.deleteById(productId)
+    .then(() => {
       console.log('DESTROYED PRODUCT')
       res.redirect('/admin/products')
     })
@@ -63,14 +67,15 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price
   const updatedImageUrl = req.body.imageUrl
   const updatedDescription = req.body.description
-  Product.findById(prodId)
-    .then((product) => {
-      product.title = updatedTitle
-      product.price = updatedPrice
-      product.description = updatedDescription
-      product.imageUrl = updatedImageUrl
-      return product.save()
-    })
+  const product = new Product(
+    updatedTitle,
+    updatedPrice,
+    updatedDescription,
+    updatedImageUrl,
+    new ObjectId(prodId)
+  )
+  product
+    .save()
     .then((result) => {
       console.log('Updated product')
       res.redirect('/admin/products')
