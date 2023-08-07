@@ -48,7 +48,7 @@ const tempCard = fs.readFileSync(
   'utf-8'
 )
 
-const temProduct = fs.readFileSync(
+const tempProduct = fs.readFileSync(
   `${__dirname}/templates/template-product.html`,
   'utf-8'
 )
@@ -57,10 +57,11 @@ const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8')
 const dataObj = JSON.parse(data)
 
 const server = http.createServer((req, res) => {
-  const pathName = req.url
+  const { query, pathname } = url.parse(req.url, true)
+  console.log(query)
 
   //Overview page
-  if (pathName === '/' || pathName === '/overview') {
+  if (pathname === '/' || pathname === '/overview') {
     res.writeHead(200, {
       'Content-type': 'text/html',
     })
@@ -72,11 +73,18 @@ const server = http.createServer((req, res) => {
     res.end(output)
 
     //Product page
-  } else if (pathName === '/product') {
-    res.end('This is the product')
+  } else if (pathname === '/product') {
+    res.writeHead(200, {
+      'Content-type': 'text/html',
+    })
+    const product = dataObj[query.id]
+    console.log(product)
+    const output = replaceTemplate(tempProduct, product)
+
+    res.end(output)
 
     // API
-  } else if (pathName === '/api') {
+  } else if (pathname === '/api') {
     res.writeHead(200, {
       'Content-type': 'application/json',
     })
