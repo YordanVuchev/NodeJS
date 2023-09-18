@@ -23,6 +23,10 @@ router
   .get(tourController.getTour)
   .post(tourController.createTour)
   .patch(tourController.updateTour)
-  .delete(tourController.deleteTour)
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.deleteTour,
+  )
 
 module.exports = router
