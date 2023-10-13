@@ -1,8 +1,12 @@
-const login = async (email, password) => {
+import axios from 'axios'
+import { showAlert } from './alerts'
+
+export const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'htpp:/127.0.0.1:3000/api/v1/users/login',
+      url: 'http://127.0.0.1:3000/api/v1/users/login',
+      withCredentials: true,
       data: {
         email,
         password,
@@ -10,21 +14,25 @@ const login = async (email, password) => {
     })
 
     if (res.data.status === 'success') {
-      alert('Logged in successfully')
+      showAlert('success', 'Logged in successfully')
       window.setTimeout(() => {
         location.assign('/')
       }, 1500)
     }
   } catch (err) {
-    alert(err.response.data.message)
+    showAlert('error', err.response.data.message)
   }
 }
 
-document.querySelector('.form').addEventListener('submit', (e) => {
-  e.preventDefault()
-  const email = document.getElementById('email').value
+export const logout = async () => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://127.0.0.1:3000/api/v1/users/logout',
+    })
 
-  const password = document.getElementById('password').value
-
-  login(email, password)
-})
+    if (res.data.status === 'success') location.reload(true)
+  } catch (err) {
+    showAlert('error', 'Error logging out. Please try again.')
+  }
+}
